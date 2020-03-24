@@ -1,0 +1,35 @@
+Jak dodać płatności PayU do swojej strony internetowej (PayU PHP REST API).
+ - Linki płatności (zamówienia) zapisywane w bazie danych
+ - Powiadomienia z PayU zapisywane w bazie danych
+ - Zapis w bazie danych tworzonych zamówień
+- Przykłady
+  - Potwierdzenie zamówienia
+  - Anulowanie zamówienia
+  - Odświeżanie statusu zamówienia
+  - Zwrot płatności
+
+
+Composer import
+```json
+{
+    "name": "username/your-project-name",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Name",
+            "email": "email@github.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "moovspace/payu": "^2.0"
+    },
+    "repositories": [
+        {
+                "type": "vcs",
+                "url": "https://github.com/moovspace/payu"
+        }
+    ]
+}
+```

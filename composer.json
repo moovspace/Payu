@@ -1,0 +1,26 @@
+{
+	"name": "moovspace/payu",
+	"type": "library",
+	"license": "LGPL-3.0",
+	"description": "PayU PHP REST API Library (SDK 2.2.11)",
+	"version": "v1.0",
+	"minimum-stability": "stable",
+	"authors": [
+		{
+			"name": "Marcin",
+			"email": "moovspace@github.com"
+		}
+	],
+	"require": {
+		"php": ">=7.3",
+		"ext-curl": "*",
+		"ext-hash": "*",
+		"ext-json": "*",
+		"ext-mbstring": "*"
+	},
+	"autoload": {
+			"psr-4": {
+				"Payu\\": "src/"
+		}
+	}
+}

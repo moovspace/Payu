@@ -1,0 +1,36 @@
+html,body{
+	background: #f9f9f9; margin: 0px; padding: 0px;
+}
+.container{
+	box-sizing: border-box;
+	width: 500px; max-width: 500px;
+	margin: 100px auto;
+	padding: 20px;
+	overflow: hidden;
+	background: #fff;
+	color: #222;
+}
+.page-header{
+	box-sizing: border-box;
+	float: left; width: 100%;
+	padding: 10px;
+}
+.page-header h1{
+	box-sizing: border-box;
+	float: left; width: 100%;
+	padding: 10px;
+	margin: 5px 0px;
+}
+.padding{
+	padding: 15px;
+}
+.green{
+	box-sizing: border-box;
+	float: left; width: 100%;
+	color: #21b973;
+}
+.red{
+	box-sizing: border-box;
+	float: left; width: 100%;
+	color: #f24;
+}

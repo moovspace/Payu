@@ -23,7 +23,7 @@ Composer import
     ],
     "minimum-stability": "stable",
     "require": {
-        "moovspace/payu": "^2.0"
+        "moovspace/payu": "^1.0"
     },
     "repositories": [
         {

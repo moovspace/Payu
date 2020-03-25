@@ -89,7 +89,7 @@ class Credentials
      *      ...
      *      Order::Create( ... );
      * }catch(Exception $e){
-     *      Order::ClearCacheToken();
+     *      Order::ClearCacheToken(); // optional
      * } block
      *
      * @return void

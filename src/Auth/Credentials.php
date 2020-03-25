@@ -5,7 +5,6 @@ use Exception;
 use Payu\Http\Http;
 use Payu\Order\Url;
 use Payu\Auth\Cache\Cache;
-use Payu\Order\Verify\Verify;
 
 class Credentials
 {
@@ -22,7 +21,7 @@ class Credentials
         }
     }
 
-    function Token($posId, $clientSecret, $sandbox = true)
+    function Token($posId, $clientSecret, $sandbox = false)
     {
         $cache = new Cache();
         $token = $cache->GetToken();
@@ -32,7 +31,7 @@ class Credentials
             try
             {
                 // Auth
-                $res = $this->Auth($posId, $clientSecret, $sandbox = true);
+                $res = $this->Auth($posId, $clientSecret, $sandbox);
 
                 self::IsValidClient($res);
 
@@ -61,7 +60,7 @@ class Credentials
         }
     }
 
-    function Auth($posId, $clientSecret, $sandbox = true)
+    function Auth($posId, $clientSecret, $sandbox = false)
     {
         $res = Http::Post(Url::Authorize($sandbox), $this->CreateCredentials($posId, $clientSecret), null);
         $this->Res = $res;

@@ -4,7 +4,7 @@ namespace Payu\Util;
 class Log
 {
 	static $Dir = 'Cache';
-	static $File = 'notify.log';
+	static $File = '.notify.log';
 
 	static function Msg($txt)
 	{
@@ -18,7 +18,7 @@ class Log
 
 		if(!empty($txt))
 		{
-			file_put_contents($_SERVER['DOCUMENT_ROOT'].'/Cache/notify.log', $txt."\r\n", FILE_APPEND | LOCK_EX);
+			@file_put_contents($_SERVER['DOCUMENT_ROOT'].'/'.self::$Dir.'/'.self::$File, $txt."\r\n", FILE_APPEND | LOCK_EX);
 		}
 	}
 
@@ -27,7 +27,7 @@ class Log
         $p = $_SERVER['DOCUMENT_ROOT'].'/'.self::$Dir;
 		if(!file_exists($p))
 		{
-			mkdir($p, 0775);
+			mkdir($p, 0700);
         }
     }
 }

@@ -50,7 +50,7 @@ class Verify
         if (strcmp($sign_signature, $hash) == 0) {
             return true;
         }else{
-            throw new Exception('ERR_SIGNATURE ' . $signature .' ### ' . $data . ' ### '. $key_md5, 9900);
+            throw new Exception('ERR_SIGNATURE', 9900);
         }
     }
 

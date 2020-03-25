@@ -43,3 +43,7 @@ try {
 } catch (Exception $e) {
 	echo $e->getMessage();
 }
+
+// Decimal to int
+// $totalAmount = number_format($totalDecimal, 2, '.', '');
+// $totalAmount = $totalAmount * 100;

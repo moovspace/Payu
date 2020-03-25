@@ -23,6 +23,10 @@ Composer import
     ],
     "minimum-stability": "stable",
     "require": {
+        "ext-curl": "*",
+		"ext-hash": "*",
+		"ext-json": "*",
+		"ext-mbstring": "*"
         "moovspace/payu": "^1.0"
     },
     "repositories": [
@@ -30,6 +34,11 @@ Composer import
                 "type": "vcs",
                 "url": "https://github.com/moovspace/payu"
         }
-    ]
+    ],
+	"autoload": {
+			"psr-4": {
+				"YourName\\": "src/"
+		}
+	}
 }
 ```

@@ -28,7 +28,7 @@ class Cache
         $data = @file_get_contents($this->CachePath);
         $obj = json_decode($data);
 
-        if(empty($obj->expire) || (int) $obj->expire < (time() - 60 * 30)){
+        if(empty($obj->expire) || (int) $obj->expire < (time() - 60 * 60)){
             $this->Clear();
             return '';
         }else{
@@ -51,7 +51,7 @@ class Cache
     {
         $this->DirPath = $_SERVER['DOCUMENT_ROOT'].'/'.ltrim($this->Dir, '/');
         if(!file_exists($this->DirPath)){
-            mkdir($this->DirPath, 0775);
+            mkdir($this->DirPath, 0700);
             @file_put_contents(rtrim(self::$DirPath, '/').'/.htaccess', 'Require all denied');
         }
     }

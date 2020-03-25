@@ -9,12 +9,12 @@ class Verify
      * Consume notification message
      * Verify headers signature from Payu notification
      *
-     * @access public
      * @param $res string Request array received from with PayU OrderNotifyRequest
+     * @param $md5_key Payu md5 key
      * @return null|data
      * @throws Exception
      */
-    public static function Notification($res, $clientSecret)
+    public static function Notification($res, $md5_key)
     {
         if (empty($res)) {
             throw new Exception('ERR_EMPTY_NOTIFICATION_DATA', 9901);
@@ -23,7 +23,7 @@ class Verify
         $headers = self::getRequestHeaders();
         $incomingSignature = self::getSignature($headers);
 
-        self::verifySign($res, $incomingSignature, $clientSecret);
+        self::verifySign($res, $incomingSignature, $md5_key);
 
         // Curl codes
         return self::Response(array('response' => $res, 'code' => 200), 'OrderNotifyRequest');

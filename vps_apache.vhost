@@ -1,0 +1,76 @@
+<VirtualHost *:80>
+        ServerName www.domain.xx
+        ServerAlias domain.xx
+        DocumentRoot /var/www/html/domain.xx
+        ErrorLog "/var/log/domain.xx.log"
+        CustomLog "/var/log/domain.xx.log" common
+        <Directory /var/www/html/domain.xx>
+            DirectoryIndex index.php index.html
+            Options +FollowSymLinks -Indexes
+            AllowOverride All
+        </Directory>
+        # RewriteEngine on
+        # RewriteCond %{SERVER_NAME} =domain.xx [OR]
+        # RewriteCond %{SERVER_NAME} =www.domain.xx
+        # RewriteRule ^ https://domain.xx%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+<VirtualHost *:443>
+        ServerName www.domain.xx
+        ServerAlias domain.xx
+        DocumentRoot /var/www/html/domain.xx
+        ErrorLog /var/log/domain.xx-error-ssl.log
+        CustomLog /var/log/domain.xx-access-ssl.log combined
+        <Directory /var/www/html/domain.xx>
+            DirectoryIndex index.php index.html
+            Options +FollowSymLinks -Indexes
+            AllowOverride All
+        </Directory>
+        # Ssl
+        SSLEngine on
+        SSLCertificateFile    /etc/letsencrypt/live/domain.xx/fullchain.pem
+        SSLCertificateKeyFile /etc/letsencrypt/live/domain.xx/privkey.pem
+
+        # Certbot
+        # SSLCertificateFile    /etc/letsencrypt/live/domain.xx/fullchain.pem
+        # SSLCertificateKeyFile /etc/letsencrypt/live/domain.xx/privkey.pem
+        # Include /etc/letsencrypt/options-ssl-apache.conf
+
+        # Https protocols
+        SSLProtocol TLSv1.2 TLSv1.3 -SSLv3 -SSLv2
+        # Http2 enable (php-fpm):
+        # a2enmod http2 headers
+        Protocols h2 http/1.1
+        # Headers A+
+        Header always set X-Frame-Options DENY
+        Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
+        # iframe DENY
+        Header always set X-Frame-Options DENY
+</VirtualHost>
+
+# Zainstaluj
+apt install apache2 php mariadb-server
+mysql_secure_installation
+# Uruchom moduły
+a2enmod rewrite ssl http2 headers
+# Zainstaluj z certyfikatem snakeoil później utwórz certyfikat ssl
+certbot --apache -d domain.xx
+
+
+# Php fpm install (http2 - only php fpm)
+sudo apt-get install php7.3-fpm
+sudo a2dismod php7.3
+sudo a2enconf php7.3-fpm
+sudo a2enmod proxy_fcgi
+
+# Disable
+sudo a2dismod mpm_prefork
+
+# Enable
+sudo a2enmod mpm_event http2 headers ssl rewrite
+
+# Restart
+sudo systemctl restart apache2
+
+# VirtualHost
+SSLProtocol TLSv1.2 TLSv1.3 -SSLv3 -SSLv2 -TLSv1 -TLSv1.1
+Protocols h2 http/1.1

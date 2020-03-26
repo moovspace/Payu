@@ -156,7 +156,7 @@ class Url
      * @param boolean $sandbox Is sandbox
      * @return string url
      */
-    static function DeleteToken($sandbox = true, $token = '')
+    static function DeleteToken($sandbox = false, $token = '')
     {
         if(empty($token)){
             throw new Exception("ERR_TOKEN_EMPTY", 9000);

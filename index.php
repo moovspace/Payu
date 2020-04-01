@@ -24,8 +24,8 @@ try
 	$o->UrlNotify('https://twoja.strona.www/Example/Notifications.php');
 
 	// Produkty
-	$o->Add($extOrderId, 25569, 'Zamówienie '.$extOrderId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
-	$o->AddProduct('Zamówienie-'.$extOrderId, 25569, 1);
+	$o->Add($extOrderId, 24669, 'Zamówienie '.$extOrderId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
+	$o->AddProduct('Zamówienie-'.$extOrderId, 24669, 1);
 	$o->AddBuyer('email@domain.xx', '+48 100 100 100', 'Anka', 'Specesetka', 'pl');
 	$order = $o->Get();
 

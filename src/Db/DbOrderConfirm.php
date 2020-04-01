@@ -27,8 +27,12 @@ class DbOrderConfirm
 	function IsOrderExist($orderId, $extOrderId)
 	{
 		$db = $this->Db;
-		$r = $db->Pdo->prepare('SELECT * FROM payment_order WHERE orderId = :orderId AND extOrderId = :extOrderId');
+		$r = $db->Pdo->prepare('SELECT COUNT(*) as cnt FROM payment_order WHERE orderId = :orderId AND extOrderId = :extOrderId');
 		$r->execute([':orderId' => strip_tags($orderId), ':extOrderId' => strip_tags($extOrderId)]);
-		return $r->rowCount();
+		$rows = $r->fetchAll();
+		if(!empty($rows)){
+			return $rows[0]['cnt'];
+		}
+		return 0;
 	}
 }

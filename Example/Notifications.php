@@ -30,20 +30,24 @@ try
 		$save = new DbOrderNotify($db);
 		$ok = $save->Create($obj, Config::SANDBOX);
 
+		if($ok == 0){
+			throw new Exception("ERR_DB_ORDER_CREATE", 1);
+		}
+
 		// Update orders table payment_status column
 		$up = new DbUpdateShop($db);
-		$up->OrdersStatusUpdate($orderId, $extOrderId, Config::SANDBOX);
+		$updated = $up->OrdersStatusUpdate($orderId, $extOrderId, Config::SANDBOX);
 
 		/* TEST ORDER IN payment_orders TABLE OR CONFIRM ALL */
 		$dbconf = new DbOrderConfirm($db);
 		$confirmed = $dbconf->Valid($orderId, $extOrderId, Config::SANDBOX);
 
-		if($confirmed > 0){
+		if($confirmed > 0 && $updated > 0){
 			// Confirm order
 			Notify::StatusConfirmed();
 		}else{
 			// Error order
-			Notify::StatusError('ERR_ORDER_ID_NOT_EXIST');
+			Notify::StatusError('ERR_ORDER_ID_NOT_EXIST updated:'.$updated . ' confirmed: '. $confirmed);
 		}
 
 		// !!! If order correct confirm

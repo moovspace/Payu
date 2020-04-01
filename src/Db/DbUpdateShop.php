@@ -76,6 +76,8 @@ class DbUpdateShop
 
         foreach ($all as $status)
         {
+			$status = trim($status['status']);
+
             // Error status ignore
             if(!empty($status) && in_array($status, NotifyStatus::STATUS_ALL))
             {
@@ -84,9 +86,9 @@ class DbUpdateShop
                 }
 
                 $db = $this->Db;
-                $r = $db->Pdo->prepare('UPDATE '.strip_tags($table_name).' SET payment_status = :status, payment_gateway = :gtw, payment_refresh = current_timestamp() WHERE payment_orderId = :oid AND payment_status != :completed AND payment_status != :canceled');
-                $r->execute([':status' => strip_tags($status), ':gtw' => strip_tags($gtw), ':oid' => strip_tags($orderId), ':completed' => NotifyStatus::STATUS_COMPLETED, ':canceled' => NotifyStatus::STATUS_CANCELED]);
-                return $r->rowCount();
+				$r = $db->Pdo->prepare('UPDATE '.strip_tags($table_name).' SET payment_status = :status, payment_gateway = :gtw, payment_refresh = current_timestamp() WHERE payment_orderId = :oid AND payment_status != :completed AND payment_status != :canceled');
+				$r->execute([':status' => strip_tags($status), ':gtw' => strip_tags($gtw), ':oid' => strip_tags($orderId), ':completed' => trim(NotifyStatus::STATUS_COMPLETED), ':canceled' => trim(NotifyStatus::STATUS_CANCELED)]);
+                // return $r->rowCount();
             }
             else
             {

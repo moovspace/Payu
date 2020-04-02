@@ -7,7 +7,7 @@ use Payu\Config; // Change to your Config.php class
 use Payu\Order\Order;
 use Payu\Auth\Credentials;
 use Payu\Db\Db;
-use Payu\Db\DbUpdateShop;
+use Payu\Db\PayuOrders;
 
 try
 {
@@ -35,8 +35,8 @@ try
 		foreach($orders as $order)
 		{
 			$db = Db::GetInstance();
-			$re = new DbUpdateShop($db);
-			$re->OrdersStatusRefresh($order->orderId, $order->status);
+			$orders = new PayuOrders($db);
+			$orders->UpdateOrderStatus($order->orderId, $order->status);
 		}
 
 		echo "<pre>";

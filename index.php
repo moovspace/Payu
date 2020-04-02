@@ -8,8 +8,7 @@ use Payu\Order\Order;
 use Payu\Order\CartOrder;
 use Payu\Auth\Credentials;
 use Payu\Db\Db;
-use Payu\Db\DbOrder;
-use Payu\Db\DbUpdateShop;
+use Payu\Db\PayuOrders;
 
 try
 {
@@ -48,22 +47,13 @@ try
 		echo "</br> OrderId: " . $orderId;
 		echo "</br> ExtOrderId: " . $extOrderId;
 
-		/*
-			SAVE PAYU ORDER IN DATABASE
-		*/
+		// Database
 		$db = Db::GetInstance();
-		$save = new DbOrder($db);
-		$ok = $save->Create($obj, $order, Config::SANDBOX);
-
-		/*
-			UPDATE shop orders TABLE payment_orderId COLUMN
-		*/
-		$update = new DbUpdateShop($db);
-		$ok = $update->OrdersOrderId($orderId, $extOrderId);
+		$orders = new PayuOrders($db);
+		$ok = $orders->AddOrderId($orderId, $extOrderId);
 
 		if($ok == 0){
-			// Orders table update error
-			// echo "</br> Zamówienie o takim extOrderId w orders nie istnieje!";
+			throw new Exception("ERR_DB_ORDER_CREATE", 1);
 		}
 
 		/*
@@ -72,6 +62,7 @@ try
 		*/
 		echo '</br> <a href="'.$paymentUrl.'" target="__blank"> Pay Now </a>';
 
+		// Opcje
 		echo '</br></br> <a href="/Example/OrderRetrive.php?id='.$orderId.'" target="__blank"> Retrive </a>';
 		echo '</br></br> <a href="/Example/OrderCancel.php?id='.$orderId.'" target="__blank"> Cancel </a>';
 		echo '</br></br> <a href="/Example/OrderRefresh.php?id='.$orderId.'" target="__blank"> Refresh </a>';

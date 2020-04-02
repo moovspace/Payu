@@ -31,9 +31,7 @@ try {
 	// Show status code
 	if($obj->status == 'SUCCESS')
 	{
-		$cost = $amount/100;
-
-		echo 'Refunded '.$cost.' PLN !!!';
+		echo 'Refunded';
 
 	}else{
 		echo "Ups errors!";

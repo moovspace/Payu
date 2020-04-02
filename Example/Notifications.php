@@ -3,13 +3,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
 use Payu\Config; // Change to your Config.php class
-use Payu\Db\Db;
 use Payu\Notify\Notify;
 use Payu\Order\Verify\Verify;
-// Save to database
-use Payu\Db\DbOrderNotify;
-use Payu\Db\DbOrderConfirm;
-use Payu\Db\DbUpdateShop;
+use Payu\Db\Db;
+use Payu\Db\PayuOrders;
 
 try
 {
@@ -19,63 +16,54 @@ try
 	// Verify notification signature if you need
 	$obj = Verify::Notification($res, Config::PAYU_MD5_KEY);
 
+	// Database
+	$db = Db::GetInstance();
+	$orders = new PayuOrders($db);
+	$ok = $orders->AddNotify($res);
+	if($ok == 0){
+		throw new Exception("ERR_DB_ORDER_CREATE", 1);
+	}
+
+	// Get notification order
 	if(!empty($obj->response->order))
 	{
 		// Do something with
 		$orderId = $obj->response->order->orderId;
 		$extOrderId = $obj->response->order->extOrderId;
-
-		// Save notifications
-		$db = Db::GetInstance();
-		$save = new DbOrderNotify($db);
-		$ok = $save->Create($obj, Config::SANDBOX);
-
-		if($ok == 0){
-			throw new Exception("ERR_DB_ORDER_CREATE", 1);
-		}
+		$status = $obj->response->order->status;
 
 		// Update orders table payment_status column
-		$up = new DbUpdateShop($db);
-		$updated = $up->OrdersStatusUpdate($orderId, $extOrderId, Config::SANDBOX);
+		$orders->UpdateOrderStatus($orderId, $status);
 
-		/* TEST ORDER IN payment_orders TABLE OR CONFIRM ALL */
-		$dbconf = new DbOrderConfirm($db);
-		$confirmed = $dbconf->Valid($orderId, $extOrderId, Config::SANDBOX);
-
-		if($confirmed > 0 && $updated > 0){
-			// Confirm order
-			Notify::StatusConfirmed();
-		}else{
-			// Error order
-			Notify::StatusError('ERR_ORDER_ID_NOT_EXIST updated:'.$updated . ' confirmed: '. $confirmed);
-		}
-
-		// !!! If order correct confirm
-		// Notify::StatusConfirmed();
+		// Confirm order
+		Notify::StatusConfirmed();
 	}
 
-	if(!empty($obj->refund))
+	// Get notification refund
+	if(!empty($obj->response->refund))
 	{
 		// Do something with
-		$orderId = $obj->refund->orderId;
-		$extOrderId = $obj->refund->extOrderId;
+		$orderId = $obj->response->refund->orderId;
+		$extOrderId = $obj->response->refund->extOrderId;
+		$status = $obj->response->refund->status;
 
-		$db = Db::GetInstance();
-		$save = new DbOrderRefund($db);
-		// create and log to file
-		$ok = $save->Create($obj, Config::SANDBOX);
+		// Save in database
+		$orders->AddRefund($obj);
 
-		// !!! If order incorrect
+		// Confirm order
 		Notify::StatusConfirmed();
 	}
 
 	// Error see in payu client panel order details
-	Notify::StatusError('ERR_DATA');
+	Notify::StatusError('ERR_NOTIFY_DATA');
 }
 catch (Exception $e)
 {
 	$msg = $e->getMessage();
 
+	// Development error log
+	@file_put_contents($_SERVER['DOCUMENT_ROOT'].'/notify-error.log', $msg, FILE_APPEND | LOCK_EX);
+
 	// Error see in payu client panel order details
-	Notify::StatusError('ERR_DATA_EXCEPTION '. $msg);
+	Notify::StatusError('ERR_EXCEPTION '. $msg);
 }

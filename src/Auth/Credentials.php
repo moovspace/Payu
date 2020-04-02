@@ -41,7 +41,7 @@ class Credentials
 
                 if(empty($token) || empty($expire)){
                     $cache->Clear();
-                    throw new Exception("ERR_EMPTY_TOKEN", 9006);
+					throw new Exception("ERR_EMPTY_TOKEN " . $this->ErrorText($res['code']), 9006);
                 }else{
                     // Save
                     $cache->SaveToken($token, $expire);
@@ -118,6 +118,34 @@ class Credentials
     protected function ParseExpire($res)
     {
         return $this->ParseResponse($res)['expires_in'];
+	}
+
+	public static function ErrorText($statusCode)
+    {
+        switch ($statusCode) {
+			case 400:
+			case 401:
+            case 403:
+            case 404:
+                return 'PayU error status: ' . $statusCode;
+				break;
+
+            case 408:
+                return 'PayU request timeout: ' . $statusCode;
+                break;
+
+            case 500:
+                return 'PayU system is unavailable: ' . $statusCode;
+                break;
+
+            case 503:
+                return 'PayU service unavailable: ' . $statusCode;
+                break;
+
+            default:
+                return 'PayU unexpected HTTP code response: ' . $statusCode;
+                break;
+        }
     }
 }
 

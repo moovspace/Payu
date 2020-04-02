@@ -6,6 +6,8 @@ use \Exception;
 use Payu\Config; // Change to your Config.php class
 use Payu\Order\Order;
 use Payu\Auth\Credentials;
+use Payu\Db\Db;
+use Payu\Db\PayuOrders;
 
 try {
 
@@ -32,6 +34,12 @@ try {
 	if($obj->status == 'SUCCESS')
 	{
 		echo 'Refunded';
+		// print_r($obj);
+
+		// Database
+		$db = Db::GetInstance();
+		$orders = new PayuOrders($db);
+		$orders->AddRefund($obj);
 
 	}else{
 		echo "Ups errors!";

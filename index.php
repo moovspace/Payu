@@ -12,8 +12,12 @@ use Payu\Db\PayuOrders;
 
 try
 {
+	// Database
+	$db = Db::GetInstance();
+	$orders = new PayuOrders($db);
+
 	// Unikalny id zamówienia w twoim sklepie
-	$extOrderId = md5(uniqid('', true));
+	echo $shopId = (int) $orders->TestOrder(); // Create sample order
 
 	// Zamówienie w payu
 	$o = new CartOrder();
@@ -23,8 +27,8 @@ try
 	$o->UrlNotify('https://twoja.strona.www/Example/Notifications.php');
 
 	// Produkty
-	$o->Add($extOrderId, 24669, 'Zamówienie '.$extOrderId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
-	$o->AddProduct('Zamówienie-'.$extOrderId, 24669, 1);
+	$o->Add($shopId, 24669, 'Zamówienie '.$shopId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
+	$o->AddProduct('Zamówienie-'.$shopId, 24669, 1);
 	$o->AddBuyer('email@domain.xx', '+48 100 100 100', 'Anka', 'Specesetka', 'pl');
 	$order = $o->Get();
 
@@ -47,10 +51,8 @@ try
 		echo "</br> OrderId: " . $orderId;
 		echo "</br> ExtOrderId: " . $extOrderId;
 
-		// Database
-		$db = Db::GetInstance();
-		$orders = new PayuOrders($db);
-		$ok = $orders->AddOrderId($orderId, $extOrderId);
+		// Add order
+		$ok = $orders->AddOrderId($orderId, $shopId);
 
 		if($ok == 0){
 			throw new Exception("ERR_DB_ORDER_CREATE", 1);
@@ -72,6 +74,9 @@ try
 	}
 	else
 	{
+		// Add order
+		$ok = $orders->UpdateOrderError($orderId, json_encode($obj));
+
 		echo "Ups errors!";
 		print_r($obj);
 	}

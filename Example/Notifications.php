@@ -43,9 +43,7 @@ try
 	if(!empty($obj->response->refund))
 	{
 		// Do something with
-		$orderId = $obj->response->refund->orderId;
-		$extOrderId = $obj->response->refund->extOrderId;
-		$status = $obj->response->refund->status;
+		$orderId = $obj->response->orderId;
 
 		// Save in database
 		$orders->AddRefund($obj);
@@ -62,7 +60,7 @@ catch (Exception $e)
 	$msg = $e->getMessage();
 
 	// Development error log
-	@file_put_contents($_SERVER['DOCUMENT_ROOT'].'/notify-error.log', $msg, FILE_APPEND | LOCK_EX);
+	@file_put_contents($_SERVER['DOCUMENT_ROOT'].'/notify-error.log', $msg . "\r\n", FILE_APPEND | LOCK_EX);
 
 	// Error see in payu client panel order details
 	Notify::StatusError('ERR_EXCEPTION '. $msg);

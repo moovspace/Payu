@@ -15,7 +15,7 @@ Włącz auto odbiór w panelu klienta PayU
 ### Import lib comoser
 ```bash
 "require": {
-        "moovspace/payu": "v1.0"
+        "moovspace/payu": "1.0"
 },
 "repositories": [
 	{
@@ -43,7 +43,7 @@ src/Config.php
 ### Baza danych mysql hasło, tabele i użytkownik (opcjonalnie)
 ```bash
 # Zaimportuj tabele
-mysql -u root -p < src/Payment/sql/delivery.sql
+mysql -u root -p < src/Payment/sql/payu.sql
 mysql -u root -p < src/Payment/sql/users.sql
 
 # Przyklad klasy połaczenia z bazą danych
@@ -116,8 +116,6 @@ try
 		// Link do płatności (lub przekieruj na ten url z header(...);)
 		echo '</br> <a href="'.$obj->response->redirectUri.'"> Pay Now </a>';
 
-		/* SAVE PAYU ORDER TO DATABASE HERE IF YOU NEED */
-
 		// echo "<pre>";
 		// print_r($obj->response);
 	}
@@ -128,10 +126,6 @@ try
 	}
 
 } catch (Exception $e) {
-
-	// Clear cache if error token optional
-	Credentials::ClearCacheToken();
-
 	echo $e->getMessage();
 }
 ?>

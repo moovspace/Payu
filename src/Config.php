@@ -14,8 +14,8 @@ class Config
 
     // Mysql db
 	const MYSQL_HOST = 'localhost';
-	const MYSQL_USER = 'delivery';
+	const MYSQL_USER = 'payu';
 	const MYSQL_PASS = 'toor';
 	const MYSQL_PORT = 3306;
-	const MYSQL_DBNAME = 'delivery';
+	const MYSQL_DBNAME = 'payu';
 }

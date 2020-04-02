@@ -47,10 +47,17 @@ class PayuOrders
             throw new Exception("ERR_DATA", 9011);
         }
 
-        $db = $this->Db;
-        $r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_orderId = :oid, payment_gateway = :gtw WHERE id = :id");
-        $r->execute([':oid' => strip_tags($orderId), ':gtw' => strip_tags($gtw), ':id' => (int) $shopId]);
-        return $r->rowCount();
+        try
+        {
+            $db = $this->Db;
+            $r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_orderId = :oid, payment_gateway = :gtw WHERE id = :id");
+            $r->execute([':oid' => strip_tags($orderId), ':gtw' => strip_tags($gtw), ':id' => (int) $shopId]);
+            return $r->rowCount();
+        }
+        catch(Exception $e)
+        {
+            throw $e;
+        }
     }
 
     /**
@@ -70,6 +77,26 @@ class PayuOrders
         $db = $this->Db;
         $r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_status = :status, payment_refresh = current_timestamp() WHERE payment_orderId = :oid AND payment_status != 'COMPLETED' AND payment_status != 'CANCELED'");
         $r->execute([':status' => strip_tags($status), ':oid' => strip_tags($orderId)]);
+        return 1;
+    }
+
+    /**
+     * Update order error
+     *
+     * @param string $orderId Payu orderid
+     * @param string $error Payu order error msg
+     * @param string $table Table name
+     * @return int
+     */
+    function UpdateOrderError($orderId, $err = '', $table = 'orders')
+    {
+        if(empty($orderId) || empty($err)){
+            throw new Exception("ERR_DATA", 9011);
+        }
+
+        $db = $this->Db;
+        $r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_error = :err WHERE payment_orderId = :oid");
+        $r->execute([':err' => strip_tags($err), ':oid' => strip_tags($orderId)]);
         return 1;
     }
 
@@ -107,8 +134,12 @@ class PayuOrders
 		// Response obj
 		$res = $obj->response;
 		// Data
-		$orderId = $res->orderId;
-		$extOrderId = $res->extOrderId;
+        $orderId = $res->orderId;
+        if(!empty($res->extOrderId)){
+            $extOrderId = $res->extOrderId;
+        }else{
+            $extOrderId = $res->refund->refundId;
+        }
 		// Refund status
 		$refund = $res->refund;
 		$refund_json = json_encode($res->refund);
@@ -120,5 +151,19 @@ class PayuOrders
 		$r = $db->Pdo->prepare('INSERT INTO payment_order_refund(orderId, extOrderId, totalAmount, currencyCode, refund) VALUES(:orderId, :extOrderId, :totalAmount, :currencyCode, :refund)');
 		$r->execute([':orderId' => strip_tags($orderId), ':extOrderId' => strip_tags($extOrderId), ':totalAmount' => strip_tags($totalAmount), ':currencyCode' => strip_tags($currencyCode), ':refund' => strip_tags($refund_json)]);
 		return $db->Pdo->lastInsertId();
-	}
+    }
+
+    function TestOrder()
+    {
+        try{
+            $db = $this->Db;
+            $r = $db->Pdo->prepare("INSERT INTO orders(payment_gateway) VALUES('NONE')");
+            $r->execute();
+            return $db->Pdo->lastInsertId();
+        }
+        catch(Exception $e)
+        {
+            throw $e;
+        }
+    }
 }

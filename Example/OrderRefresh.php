@@ -34,6 +34,7 @@ try
 
 		foreach($orders as $order)
 		{
+			// Odśwież status
 			$db = Db::GetInstance();
 			$orders = new PayuOrders($db);
 			$orders->UpdateOrderStatus($order->orderId, $order->status);

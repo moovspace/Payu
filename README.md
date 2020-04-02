@@ -15,7 +15,7 @@ Włącz auto odbiór w panelu klienta PayU
 ### Import lib comoser
 ```bash
 "require": {
-        "moovspace/payu": "1.0"
+        "moovspace/payu": "3.0"
 },
 "repositories": [
 	{

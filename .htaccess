@@ -1,0 +1,21 @@
+RewriteEngine on
+RewriteBase /
+
+# Display already existing files and folders
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule (.*) $1 [NC,QSA,L]
+
+# Favicon
+# RewriteRule ^favicon\.ico$ /favicon/favicon.ico [L]
+
+# Rewrite all urls
+# RewriteRule ^(.*)/?$ index.php?url=$1 [NC,L,QSA]
+# RewriteRule ^(.*)/?$ index.php [NC,L,QSA]
+
+<FilesMatch "^\.">
+	Require all denied
+    Order allow,deny
+    Deny from all
+</FilesMatch>

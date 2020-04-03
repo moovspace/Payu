@@ -156,7 +156,7 @@ composer dump-autoload -o
 - Przekierowujesz klienta na ten link
 - Klient dokonuje płatności (potwierdza lub rezygnuje)
 - Potwierdzona - przekierowanie na continueUrl: http://twoja.strona.www/Example/notify/success.php
-- Rezygnuje/Anulouje - przekierowanie na http://twoja.strona.www/Example/notify/success.php?error=501 => error.php
+- Rezygnuje/Anuluje - przekierowanie na http://twoja.strona.www/Example/notify/success.php?error=501 => error.php
 - Po dokonaniu transakcji payu wysyła potwierdzenie na podany w zamówieniu (w pliku CreatePaymentLink.php) notifyUrl: http://twoja.strona.www/Example/Notifications.php
 
 ## Błędy z potwierdzeń (notyfikacji z PayU)

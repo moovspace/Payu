@@ -17,7 +17,7 @@ try
 	$orders = new PayuOrders($db);
 
 	// Unikalny id zamówienia w twoim sklepie
-	$shopId = $orders->TestOrder(); // Create sample order
+	$shopId = (int) $orders->TestOrder(); // Create sample order
 
 	// Zamówienie w payu
 	$o = new CartOrder();

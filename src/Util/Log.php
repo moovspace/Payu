@@ -18,6 +18,7 @@ class Log
 
 		if(!empty($txt))
 		{
+			$txt = time(). ' --- ' . $txt;
 			@file_put_contents($_SERVER['DOCUMENT_ROOT'].'/'.self::$Dir.'/'.self::$File, $txt."\r\n", FILE_APPEND | LOCK_EX);
 		}
 	}

@@ -3,10 +3,11 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
 use Payu\Config; // Change to your Config.php class
+use Payu\Db\Db; // Change to your db class
+use Payu\Db\PayuOrders;
 use Payu\Notify\Notify;
 use Payu\Order\Verify\Verify;
-use Payu\Db\Db;
-use Payu\Db\PayuOrders;
+use Payu\Util\Log;
 
 try
 {
@@ -59,8 +60,8 @@ catch (Exception $e)
 {
 	$msg = $e->getMessage();
 
-	// Development error log
-	@file_put_contents($_SERVER['DOCUMENT_ROOT'].'/notify-error.log', $msg . "\r\n", FILE_APPEND | LOCK_EX);
+	// Log to file
+	Log::Msg($msg);
 
 	// Error see in payu client panel order details
 	Notify::StatusError('ERR_EXCEPTION '. $msg);

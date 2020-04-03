@@ -4,17 +4,20 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
 use \Exception;
 use Payu\Config; // Change to your Config.php class
+use Payu\Db\Db; // Change to your Db class
+use Payu\Db\PayuOrders;
 use Payu\Order\Order;
 use Payu\Order\CartOrder;
 use Payu\Auth\Credentials;
-use Payu\Db\Db;
-use Payu\Db\DbOrder;
-use Payu\Db\DbUpdateShop;
 
 try
 {
+	// Database
+	$db = Db::GetInstance();
+	$orders = new PayuOrders($db);
+
 	// Unikalny id zamówienia w twoim sklepie
-	$extOrderId = md5(uniqid('', true));
+	$shopId = $orders->TestOrder(); // Create sample order
 
 	// Zamówienie w payu
 	$o = new CartOrder();
@@ -23,9 +26,9 @@ try
 	$o->UrlContinue('https://twoja.strona.www/Example/notify/success.php');
 	$o->UrlNotify('https://twoja.strona.www/Example/Notifications.php');
 
-		// Produkty
-	$o->Add($extOrderId, 24669, 'Zamówienie '.$extOrderId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
-	$o->AddProduct('Zamówienie-'.$extOrderId, 24669, 1);
+	// Produkty
+	$o->Add($shopId, 1555, 'Zamówienie '.$shopId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
+	$o->AddProduct('Zamówienie-'.$shopId, 1555, 1);
 	$o->AddBuyer('email@domain.xx', '+48 100 100 100', 'Anka', 'Specesetka', 'pl');
 	$order = $o->Get();
 
@@ -45,42 +48,32 @@ try
 		$extOrderId = $obj->response->extOrderId;
 		$paymentUrl = $obj->response->redirectUri;
 
-		echo "</br> OrderId: " . $orderId;
-		echo "</br> ExtOrderId: " . $extOrderId;
-
-		/*
-			SAVE PAYU ORDER IN DATABASE
-		*/
-		$db = Db::GetInstance();
-		$save = new DbOrder($db);
-		$ok = $save->Create($obj, $order, Config::SANDBOX);
-
-		/*
-			UPDATE shop orders TABLE payment_orderId COLUMN
-		*/
-		$update = new DbUpdateShop($db);
-		$ok = $update->OrdersOrderId($orderId, $extOrderId);
+		// Add order db
+		$ok = $orders->AddOrderId($orderId, $shopId, $paymentUrl);
 
 		if($ok == 0){
-			// Orders table update error
-			// echo "</br> Zamówienie o takim extOrderId w orders nie istnieje!";
+			throw new Exception("ERR_DB_ORDER_CREATE", 1);
 		}
 
+		echo "</br> OrderId: " . $orderId;
+		echo "</br> ExtOrderId: " . $extOrderId;
 		/*
 			Jak wsio ok to wyświetl link do płatności
 			lub przekieruj na ten url z header('Location: '.$paymentUrl);
 		*/
 		echo '</br> <a href="'.$paymentUrl.'" target="__blank"> Pay Now </a>';
 
+		// Opcje
 		echo '</br></br> <a href="/Example/OrderRetrive.php?id='.$orderId.'" target="__blank"> Retrive </a>';
 		echo '</br></br> <a href="/Example/OrderCancel.php?id='.$orderId.'" target="__blank"> Cancel </a>';
 		echo '</br></br> <a href="/Example/OrderRefresh.php?id='.$orderId.'" target="__blank"> Refresh </a>';
 		echo '</br></br> <a href="/Example/OrderRefund.php?id='.$orderId.'" target="__blank"> Refund </a>';
-
-
 	}
 	else
 	{
+		// Add order
+		$orders->UpdateOrderError($orderId, json_encode($obj));
+
 		echo "Ups errors!";
 		print_r($obj);
 	}

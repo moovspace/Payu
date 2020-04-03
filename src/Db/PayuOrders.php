@@ -39,25 +39,22 @@ class PayuOrders
 	 *
 	 * @param string $orderId Payu orderid
 	 * @param string $shopId User shop id
-	 * @return itn
+	 * @return int
 	 */
-	function AddOrderId($orderId, $shopId, $table = 'orders', $gtw = 'PAYU')
+	function AddOrderId($orderId, $shopId, $url = '', $table = 'orders', $gtw = 'PAYU')
 	{
 		if(empty($orderId) || empty($shopId)){
 			throw new Exception("ERR_DATA", 9011);
 		}
 
-		try
-		{
-			$db = $this->Db;
-			$r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_orderId = :oid, payment_gateway = :gtw WHERE id = :id");
-			$r->execute([':oid' => strip_tags($orderId), ':gtw' => strip_tags($gtw), ':id' => (int) $shopId]);
-			return $r->rowCount();
+		if(!filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED)){
+			throw new Exception("ERR_PAYMENT_URL", 9011);
 		}
-		catch(Exception $e)
-		{
-			throw $e;
-		}
+
+		$db = $this->Db;
+		$r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_orderId = :oid, payment_gateway = :gtw, payment_url = :url WHERE id = :id");
+		$r->execute([':oid' => strip_tags($orderId), ':gtw' => strip_tags($gtw), ':url' => strip_tags($url), ':id' => (int) $shopId]);
+		return $r->rowCount();
 	}
 
 	/**

@@ -4,10 +4,10 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
 use \Exception;
 use Payu\Config; // Change to your Config.php class
+use Payu\Db\Db; // Change to your Db class
+use Payu\Db\PayuOrders;
 use Payu\Order\Order;
 use Payu\Auth\Credentials;
-use Payu\Db\Db;
-use Payu\Db\PayuOrders;
 
 try
 {

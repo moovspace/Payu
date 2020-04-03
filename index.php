@@ -4,11 +4,11 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
 use \Exception;
 use Payu\Config; // Change to your Config.php class
+use Payu\Db\Db; // Change to your Db class
+use Payu\Db\PayuOrders;
 use Payu\Order\Order;
 use Payu\Order\CartOrder;
 use Payu\Auth\Credentials;
-use Payu\Db\Db;
-use Payu\Db\PayuOrders;
 
 try
 {
@@ -17,7 +17,7 @@ try
 	$orders = new PayuOrders($db);
 
 	// Unikalny id zamówienia w twoim sklepie
-	echo $shopId = (int) $orders->TestOrder(); // Create sample order
+	$shopId = (int) $orders->TestOrder(); // Create sample order
 
 	// Zamówienie w payu
 	$o = new CartOrder();
@@ -51,8 +51,8 @@ try
 		echo "</br> OrderId: " . $orderId;
 		echo "</br> ExtOrderId: " . $extOrderId;
 
-		// Add order
-		$ok = $orders->AddOrderId($orderId, $shopId);
+		// Add order db
+		$ok = $orders->AddOrderId($orderId, $shopId, $paymentUrl);
 
 		if($ok == 0){
 			throw new Exception("ERR_DB_ORDER_CREATE", 1);
@@ -75,7 +75,7 @@ try
 	else
 	{
 		// Add order
-		$ok = $orders->UpdateOrderError($orderId, json_encode($obj));
+		$orders->UpdateOrderError($orderId, json_encode($obj));
 
 		echo "Ups errors!";
 		print_r($obj);

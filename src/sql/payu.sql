@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Czas generowania: 02 Kwi 2020, 17:42
+-- Czas generowania: 03 Kwi 2020, 08:44
 -- Wersja serwera: 10.3.22-MariaDB-0+deb10u1
 -- Wersja PHP: 7.3.14-1~deb10u1
 
@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `payment_orderId` varchar(250) NOT NULL DEFAULT '',
   `payment_error` text NOT NULL DEFAULT '',
   `payment_refresh` timestamp NOT NULL DEFAULT current_timestamp(),
+  `payment_url` text NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

@@ -80,20 +80,20 @@ class PayuOrders
 	/**
 	 * Update order error
 	 *
-	 * @param string $orderId Payu orderid
+	 * @param string $shopId Shop orders table id column
 	 * @param string $error Payu order error msg
 	 * @param string $table Table name
 	 * @return int
 	 */
-	function UpdateOrderError($orderId, $err = '', $table = 'orders')
+	function UpdateOrderError($shopId, $err = '', $table = 'orders')
 	{
-		if(empty($orderId) || empty($err)){
+		if(empty($shopId) || empty($err)){
 			throw new Exception("ERR_DATA", 9011);
 		}
 
 		$db = $this->Db;
-		$r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_error = :err WHERE payment_orderId = :oid");
-		$r->execute([':err' => strip_tags($err), ':oid' => strip_tags($orderId)]);
+		$r = $db->Pdo->prepare("UPDATE ".strip_tags($table)." SET payment_error = :err WHERE id = :id");
+		$r->execute([':err' => strip_tags($err), ':id' => strip_tags($shopId)]);
 		return 1;
 	}
 

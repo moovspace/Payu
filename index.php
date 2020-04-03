@@ -74,8 +74,8 @@ try
 	}
 	else
 	{
-		// Add order
-		$orders->UpdateOrderError($orderId, json_encode($obj));
+		// Add orders error
+		$orders->UpdateOrderError($shopId, json_encode($obj));
 
 		echo "Ups errors!";
 		print_r($obj);

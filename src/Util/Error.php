@@ -15,5 +15,4 @@ class Error
     const E9901 = 'ERR_EMPTY_NOTIFICATION_DATA';
     const E9902 = 'ERR_RESPONSE_VERIFY';
     const E9903 = 'ERR_EMPTY_SIGNATURE';
-
 }

@@ -28,7 +28,7 @@ try
 	// Pobierz status
 	if($obj->status == 'SUCCESS')
 	{
-		echo "Order ID: '.$orderId.' canceled! </br>";
+		echo "Order ID: " . $orderId . " canceled! </br>";
 		print_r($obj);
 	}
 	else

@@ -28,7 +28,7 @@ try
 	// Pobierz status
 	if($obj->status == 'SUCCESS')
 	{
-		echo "Order ID: '.$orderId.' retrived! </br>";
+		echo "Order ID: " . $orderId . " retrived! </br>";
 		print_r($obj);
 	}
 	else

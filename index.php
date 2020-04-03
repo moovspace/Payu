@@ -17,7 +17,7 @@ try
 	$orders = new PayuOrders($db);
 
 	// Unikalny id zamówienia w twoim sklepie
-	$shopId = (int) $orders->TestOrder(); // Create sample order
+	$shopId = $orders->TestOrder(); // Create sample order
 
 	// Zamówienie w payu
 	$o = new CartOrder();
@@ -27,8 +27,8 @@ try
 	$o->UrlNotify('https://twoja.strona.www/Example/Notifications.php');
 
 	// Produkty
-	$o->Add($shopId, 24669, 'Zamówienie '.$shopId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
-	$o->AddProduct('Zamówienie-'.$shopId, 24669, 1);
+	$o->Add($shopId, 6969, 'Zamówienie '.$shopId, 'PLN', Config::PAYU_POS_ID, $_SERVER['REMOTE_ADDR']);
+	$o->AddProduct('Zamówienie-'.$shopId, 6969, 1);
 	$o->AddBuyer('email@domain.xx', '+48 100 100 100', 'Anka', 'Specesetka', 'pl');
 	$order = $o->Get();
 

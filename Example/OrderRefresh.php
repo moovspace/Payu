@@ -30,14 +30,14 @@ try
 	// Pobierz status
 	if($obj->status == 'SUCCESS')
 	{
-		$orders = $obj->response->orders;
+		$db = Db::GetInstance();
+		$payu = new PayuOrders($db);
 
+		$orders = $obj->response->orders;
 		foreach($orders as $order)
 		{
 			// Odśwież status
-			$db = Db::GetInstance();
-			$orders = new PayuOrders($db);
-			$orders->UpdateOrderStatus($order->orderId, $order->status);
+			$payu->UpdateOrderStatus($order->orderId, $order->status);
 		}
 
 		echo "<pre>";

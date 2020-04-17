@@ -1,4 +1,4 @@
-# Payu płatności composer
+# Integracja Payu Php Sdk Rest Api (composer)
 Jak dodać płatności PayU do swojej strony internetowej. PayU php REST API.
 - Linki płatności (zamówienia) zapisywane w bazie danych
 - Powiadomienia z PayU zapisywane w bazie danych

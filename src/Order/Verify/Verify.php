@@ -39,6 +39,10 @@ class Verify
         $algorithm = $sign['algorithm'];
         $sign_signature = $sign['signature'];
 
+	if(empty($sign_signature)){
+            throw new Exception("ERR_EMPTY_VERIFY_SIGNATURE_DATA", 1);
+        }
+	    
         if ($algorithm == 'MD5') {
             $hash = md5($data . $key_md5);
         } else if (in_array($algorithm, array('SHA', 'SHA1', 'SHA-1'))) {
@@ -47,7 +51,7 @@ class Verify
             $hash = hash('sha256', $data . $key_md5);
         }
 
-        if (strcmp($sign_signature, $hash) == 0) {
+        if ($sign_signature === $hash) {
             return true;
         }else{
             throw new Exception('ERR_SIGNATURE', 9900);
